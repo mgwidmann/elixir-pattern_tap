@@ -5,6 +5,14 @@ defmodule PatternTap.Mixfile do
     [app: :pattern_tap,
      version: "0.1.0",
      elixir: "~> 1.0",
+     description: """
+     Macro for tapping into a pattern match while using the pipe operator
+     """,
+     package: [
+       contributors: ["Matt Widmann"],
+       licenses: ["MIT"],
+       links: %{:"Github" => "https://github.com/mgwidmann/elixir-pattern_tap"}
+     ],
      deps: deps]
   end
 
