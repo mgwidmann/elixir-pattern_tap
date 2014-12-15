@@ -5,7 +5,7 @@ PatternTap
 
 But when your result cannot be directly input into the next function, you have to stop, pattern match out the value you want and start piping again!
 
-It is a common pattern to return data like `{:ok, result}` or `{:error, reason}`. When you want to handle both cases, theres not much you can do except use another function or a `case`. But otherwise you can `use PatternTap`!
+It is a common pattern to return data like `{:ok, result}` or `{:error, reason}`. When you want to handle both cases, something like [elixir-pipes](https://github.com/batate/elixir-pipes) may be a better use case for you. But otherwise, for simple destructuring of data and returning it in one line (or to just **let it fail**) you can `use PatternTap`!
 
 #### Not fun way
 
@@ -25,8 +25,10 @@ end
 Anytime where the object you want requires pattern matching but you want to either return on one line or continue piping, you can `use PatternTap`!
 
 ```elixir
-{:ok, result} = something |> something_else
-result
+def my_function do
+  {:ok, result} = something |> something_else
+  result
+end
 ```
 
 #### Pattern Tap
@@ -49,16 +51,45 @@ end
 And the second example
 
 ```elixir
-something |> something_else |> tap({:ok, result}, result)
+def my_function do
+  something |> something_else |> tap({:ok, result}, result)
+end
 ```
 
-### Usage
+### Variable Leakage
 
-The `tap/3` macro takes `data, pattern, return_variable` for its three parameters. The variables you create in your pattern will be available even after the tap call. Take this use case for example.
+**PatternTap** makes use of `case` in order to prevent leaking the variables you create. So after using `tap`, you won't have access to the patterns you create. This means if you bind more than one variable in your pattern, you won't have access to it.
+
+Take the following example:
 
 ```elixir
-[:a] |> tap([a], a)  # => Returns :a
-IO.puts "#{a}"        # The variable a is available
+my_data = {:data1, :data2} |> tap({d1, d2}, d1)
+d2 # => ** (CompileError) ...: function d2/0 undefined
 ```
 
-All other variables will be available after the `tap` call, though `tap` will only return a single variable. This means `tap({:ok, 1}, {e, r}, r)` will return `r` (which has the value 1) but in the next statement, the variable `e` will be available (which has the value `:ok`).
+Instead you can use `destruct` to destructure the data you want. This does the same thing but with the side effect of keeping the binding you created in your patterns.
+
+```elixir
+{:data1, :data2} |> destruct({d1, d2}, d1) |> some_func(d2)
+```
+
+### Unmatched results
+
+#### Tap
+
+Because `tap/3` uses `case` you will get a `CaseClauseError` with the data which did not match in the error report.
+
+```elixir
+{:error, "reason"} |> tap({:ok, result}, result)
+# ** (CaseClauseError) no case clause matching: {:error, "reason"}
+```
+
+
+#### Destruct
+
+Since `destruct/3` uses `=` you will instead get a `MatchError` with the data which did not match in the error report.
+
+```elixir
+{:error, "reason"} |> destruct({:ok, result}, result)
+# ** (MatchError) no match of right hand side value: {:error, "reason"}
+```
