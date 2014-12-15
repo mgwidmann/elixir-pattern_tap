@@ -41,9 +41,9 @@ defmodule Foo do
     input
       |> Enum.map(&(to_string(&1)))
       |> Foo.HardWorker.work
-      |> tap(:r1, {:ok, r1})
+      |> tap({:ok, r1}, r1)
       |> Enum.map(&(Foo.IntermediateResult.handle(&1)))
-      |> tap(:r2, {:ok, r2})
+      |> tap({:ok, r2}, r2)
   end
 end
 ```
