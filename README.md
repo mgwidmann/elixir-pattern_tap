@@ -49,16 +49,16 @@ end
 And the second example
 
 ```elixir
-something |> something_else |> tap(:result, {:ok, result})
+something |> something_else |> tap({:ok, result}, result)
 ```
 
 ### Usage
 
-The `tap/3` macro takes `data, return_variable, pattern` for its three parameters. This takes advantage of Elixir's `binding` call. The variables you create in your pattern will be available even after the tap call. Take this use case for example.
+The `tap/3` macro takes `data, pattern, return_variable` for its three parameters. The variables you create in your pattern will be available even after the tap call. Take this use case for example.
 
 ```elixir
-[:a] |> tap(:a, [a])  # => Returns :a
+[:a] |> tap([a], a)  # => Returns :a
 IO.puts "#{a}"        # The variable a is available
 ```
 
-The symbol `:a` passed into `tap` is what variable to return. All other variables will be available after the `tap` call, though `tap` will only return a single variable. This means `tap({:ok, 1}, :r, {e, r})` will return `r` (which has the value 1) but in the next statement, the variable `e` will be available (which has the value `:ok`).
+All other variables will be available after the `tap` call, though `tap` will only return a single variable. This means `tap({:ok, 1}, {e, r}, r)` will return `r` (which has the value 1) but in the next statement, the variable `e` will be available (which has the value `:ok`).

@@ -6,10 +6,10 @@ defmodule PatternTap do
     end
   end
 
-  defmacro tap(data, var, pattern) do
+  defmacro tap(data, pattern, var) do
     quote do
       unquote(pattern) = unquote(data)
-      binding[unquote(var)]
+      unquote(var)
     end
   end
 
