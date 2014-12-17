@@ -14,10 +14,22 @@ defmodule PatternTap do
     end
   end
 
+  defmacro tap(data, {:~>, _, [pattern, var]}) do
+    quote do
+      tap(unquote(data), unquote(pattern), unquote(var))
+    end
+  end
+
   defmacro destruct(data, pattern, var) do
     quote do
       unquote(pattern) = unquote(data)
       unquote(var)
+    end
+  end
+
+  defmacro destruct(data, {:~>, _, [pattern, var]}) do
+    quote do
+      destruct(unquote(data), unquote(pattern), unquote(var))
     end
   end
 

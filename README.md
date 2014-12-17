@@ -41,9 +41,9 @@ defmodule Foo do
     input
       |> Enum.map(&(to_string(&1)))
       |> Foo.HardWorker.work
-      |> tap({:ok, r1}, r1)
+      |> tap({:ok, r1} ~> r1) # tap({:ok, r1}, r1) is also a supported format
       |> Enum.map(&(Foo.IntermediateResult.handle(&1)))
-      |> tap({:ok, r2}, r2)
+      |> tap({:ok, r2} ~> r2) # tap({:ok, r2}, r2) is also a supported format
   end
 end
 ```
@@ -51,8 +51,9 @@ end
 And the second example
 
 ```elixir
+# tap({:ok, result}, result) also supported
 def my_function do
-  something |> something_else |> tap({:ok, result}, result)
+  something |> something_else |> tap({:ok, result} ~> result)
 end
 ```
 
@@ -63,14 +64,14 @@ end
 Take the following example:
 
 ```elixir
-my_data = {:data1, :data2} |> tap({d1, d2}, d1)
+my_data = {:data1, :data2} |> tap({d1, d2} ~> d1)
 d2 # => ** (CompileError) ...: function d2/0 undefined
 ```
 
 Instead you can use `destruct` to destructure the data you want. This does the same thing but with the side effect of keeping the binding you created in your patterns.
 
 ```elixir
-{:data1, :data2} |> destruct({d1, d2}, d1) |> some_func(d2)
+{:data1, :data2} |> destruct({d1, d2} ~> d1) |> some_func(d2)
 ```
 
 ### Unmatched results
@@ -80,7 +81,7 @@ Instead you can use `destruct` to destructure the data you want. This does the s
 Because `tap/3` uses `case` you will get a `CaseClauseError` with the data which did not match in the error report.
 
 ```elixir
-{:error, "reason"} |> tap({:ok, result}, result)
+{:error, "reason"} |> tap({:ok, result} ~> result)
 # ** (CaseClauseError) no case clause matching: {:error, "reason"}
 ```
 
@@ -90,6 +91,6 @@ Because `tap/3` uses `case` you will get a `CaseClauseError` with the data which
 Since `destruct/3` uses `=` you will instead get a `MatchError` with the data which did not match in the error report.
 
 ```elixir
-{:error, "reason"} |> destruct({:ok, result}, result)
+{:error, "reason"} |> destruct({:ok, result} ~> result)
 # ** (MatchError) no match of right hand side value: {:error, "reason"}
 ```
