@@ -9,7 +9,7 @@ defmodule PatternTap.Mixfile do
      Macro for tapping into a pattern match while using the pipe operator
      """,
      package: [
-       contributors: ["Matt Widmann"],
+       maintainers: ["Matt Widmann"],
        licenses: ["MIT"],
        links: %{:"Github" => "https://github.com/mgwidmann/elixir-pattern_tap"}
      ],
