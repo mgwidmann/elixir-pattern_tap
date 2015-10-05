@@ -4,7 +4,7 @@ defmodule PatternTap.Mixfile do
   def project do
     [app: :pattern_tap,
      version: "0.2.1",
-     elixir: "~> 1.0",
+     elixir: "~> 1.0 or ~> 1.1.0",
      description: """
      Macro for tapping into a pattern match while using the pipe operator
      """,
