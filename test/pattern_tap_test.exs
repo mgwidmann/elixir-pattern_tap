@@ -1,7 +1,7 @@
 defmodule PatternTapTest do
   use ExUnit.Case
   use PatternTap
-
+  doctest PatternTap
   test "can do simple pattern matching" do
     assert tap(:ok, :ok, nil) == nil
     assert tap(:ok, :ok ~> nil) == nil
@@ -75,4 +75,16 @@ defmodule PatternTapTest do
     assert b == :b
   end
 
+  describe "leak" do
+    test "creates a new variable" do
+      [1, 2] |> Enum.reverse |> leak(backwards)
+      assert backwards == [2, 1]
+    end
+
+    test "supports internal pattern matches" do
+      [1, 2] |> Enum.reverse |> leak([h|t])
+      assert h == 2
+      assert t == [1]
+    end
+  end
 end

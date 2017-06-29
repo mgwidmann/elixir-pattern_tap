@@ -33,4 +33,19 @@ defmodule PatternTap do
     end
   end
 
+  @doc """
+  leaks a pipelined value into the surrounding context as a new variable.
+
+  ## Examples:
+
+    iex> "hey" |> String.upcase |> leak(uppercase) |> String.to_atom 
+    :HEY
+    ...> uppercase
+    "HEY"
+  """
+  defmacro leak(data, var) do
+    quote do
+      unquote(var) = unquote(data)
+    end
+  end
 end
