@@ -74,6 +74,17 @@ Instead you can use `destruct` to destructure the data you want. This does the s
 {:data1, :data2} |> destruct({d1, d2} ~> d1) |> some_func(d2)
 ```
 
+To simply save a partial result for later use, consider using `leak/2`:
+
+```elixir
+[:data1, :data2] |> Enum.reverse |> leak(reversed) |> hd
+hd # => :data2
+reversed # => [:data2, :data1]
+```
+
+Note that `|> leak(var)` is the equivalent of `|> destruct(var ~> var)`.
+
+
 ### Unmatched results
 
 #### Tap
@@ -88,7 +99,7 @@ Because `tap/3` uses `case` you will get a `CaseClauseError` with the data which
 
 #### Destruct
 
-Since `destruct/3` uses `=` you will instead get a `MatchError` with the data which did not match in the error report.
+Since `destruct/3` and `leak/2` use `=` you will instead get a `MatchError` with the data which did not match in the error report.
 
 ```elixir
 {:error, "reason"} |> destruct({:ok, result} ~> result)
