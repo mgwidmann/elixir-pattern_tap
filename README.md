@@ -77,12 +77,13 @@ Instead you can use `destruct` to destructure the data you want. This does the s
 To simply save a partial result for later use, consider using `leak/2`:
 
 ```elixir
-[:data1, :data2] |> Enum.reverse |> leak(reversed) |> hd
-hd # => :data2
-reversed # => [:data2, :data1]
+iex> [:data1, :data2] |> Enum.reverse |> leak(reversed) |> hd
+:data2
+iex> reversed
+[:data2, :data1]
 ```
 
-Note that `|> leak(var)` is the equivalent of `|> destruct(var ~> var)`.
+Note that `|> leak(variable_name)` is equivalent to `|> destruct(variable_name ~> variable_name)`.
 
 
 ### Unmatched results
@@ -104,4 +105,34 @@ Since `destruct/3` and `leak/2` use `=` you will instead get a `MatchError` with
 ```elixir
 {:error, "reason"} |> destruct({:ok, result} ~> result)
 # ** (MatchError) no match of right hand side value: {:error, "reason"}
+```
+
+#### Leak
+
+`leak(data, variable)` expands to `variable = data`, so in a simple use case,
+leak can never fail, though it may override an existing variable:
+
+```elixir
+iex> old_var = 5
+iex> [1, 2] |> leak(old_var) |> length
+2
+iex> old_var
+[1, 2]
+```
+
+Because `leak(data, variable)` expands to `variable = data`, we can do all of our
+favorite Elixir pattern-matching tricks here, e.g.:
+
+```elixir
+iex> %{a: 1, b: 2} |> leak(%{b: b})
+%{a: 1, b: 2}
+iex> b
+2
+```
+
+This flexibility allows `leak` to fail just like `destruct`:
+
+```elixir
+iex> %{a: 1, b: 2} |> leak(%{c: c})
+** (MatchError) no match of right hand side value: %{a: 1, b: 2}
 ```
