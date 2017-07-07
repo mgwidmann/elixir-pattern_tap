@@ -124,14 +124,14 @@ defmodule PatternTap do
 
   ## Examples:
 
-    iex> "hey" |> String.upcase |> leak(uppercase) |> String.to_atom
-    :HEY
-    iex> uppercase
-    "HEY"
-    iex> {:ok, "the result"} |> leak({:ok, result})
-    {:ok, "the result"}
-    iex> result
-    "the result"
+      iex> "hey" |> String.upcase |> leak(uppercase) |> String.to_atom
+      :HEY
+      iex> uppercase
+      "HEY"
+      iex> {:ok, "the result"} |> leak({:ok, result})
+      {:ok, "the result"}
+      iex> result
+      "the result"
   """
   defmacro leak(data, var) do
     quote do
