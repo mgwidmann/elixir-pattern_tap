@@ -18,9 +18,9 @@ defmodule PatternTapTest do
 
   test "variables are not available after" do
     tap([:foo], [f], f)
-    assert binding[:f] == nil
+    assert binding()[:f] == nil
     tap([:foo], [f] ~> f)
-    assert binding[:f] == nil
+    assert binding()[:f] == nil
   end
 
   test "can do tuple pattern matching" do
@@ -69,7 +69,7 @@ defmodule PatternTapTest do
   end
 
   test "destruct keeps variables around" do
-    destruct({:a, :b}, {a, b}, a)
+    destruct({:a, :b}, {a, _b}, a)
     destruct({:a, :b}, {a, b} ~> a)
     assert a == :a
     assert b == :b
