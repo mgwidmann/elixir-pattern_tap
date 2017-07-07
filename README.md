@@ -1,7 +1,7 @@
 PatternTap
 ==========
 
-##### The pipe operator `|>` is an awesome feature of Elixir.
+##### The pipe operator `|>` is an awesome feature of Elixir. Keep using it.
 
 But when your result cannot be directly input into the next function, you have to stop, pattern match out the value you want and start piping again!
 
